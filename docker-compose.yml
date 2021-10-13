@@ -1,0 +1,40 @@
+version: '3.6'
+
+# don't specficy any ports, let compose take care of the network
+# you should be able to then connect to mysql on its standard port 3306
+
+services: 
+    mysql:
+        image: mysql/mysql-server:latest
+        environment:
+            MYSQL_DATABASE: test
+            MYSQL_USER: root
+            MYSQL_ROOT_PASSWORD: password
+            MYSQL_PASSWORD: password
+        networks:
+            - testing_net
+
+    app:
+        build: ./py_app
+        volumes:
+            - ./py_app:/usr/src/py_app
+        networks:
+            - testing_net
+        depends_on:
+            - mysql
+        # this command will keep the python container running instead of executing whatever script and then exiting
+        command:
+            tail -f /dev/null
+    
+    # shell container was just for debugging, you don't need it
+    shell:
+        build:
+            context: ./shell
+        networks:
+            - testing_net
+        stdin_open: true
+        tty: true
+
+# by default this network uses the 'bridge' driver which is what you want with standalone containers that need to speak to each other
+networks:
+    testing_net:
