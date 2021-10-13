@@ -1,6 +1,6 @@
 version: '3.6'
 
-# don't specficy any ports, let compose take care of the network
+# don't specify any ports, let compose take care of the network
 # you should be able to then connect to mysql on its standard port 3306
 
 services: 
